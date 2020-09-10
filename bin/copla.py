@@ -189,13 +189,12 @@ def run_pfinder(fname, outdir):
 
 def write_classes(graph, filename):
     f = open(filename, 'w')
-    header = "AccessionVersion\tPTU_Curated\tPTU_Ref\tCComp\tBlock\tBlockCC\tBlockCC4"
+    header = "AccessionVersion\tPTU_Ref\tCComp\tBlock\tBlockCC\tBlockCC4"
     if 'sHSBM' in g.vp.keys():
         header += "\tsHSBM\tPTU\tHRange"
     f.write(header+"\n")
     for v in graph.vertices():
         AccessionVersion = graph.vp.AccessionVersion[v]
-        PtuCurated = str(graph.vp.PtuCurated[v])
         PtuRef = str(graph.vp.PtuRef[v])
         CComp = str(graph.vp.CComp[v])
         Block = str(graph.vp.Block[v])
@@ -205,9 +204,9 @@ def write_classes(graph, filename):
             sHSBM = graph.vp.sHSBM[v]
             Ptu = graph.vp.Ptu[v]
             HRange = graph.vp.HRange[v]
-            f.write("\t".join((AccessionVersion, PtuCurated, PtuRef, CComp, Block, BlockCC, BlockCC4, sHSBM, Ptu, HRange)) + "\n")
+            f.write("\t".join((AccessionVersion, PtuRef, CComp, Block, BlockCC, BlockCC4, sHSBM, Ptu, HRange)) + "\n")
         else:
-            f.write("\t".join((AccessionVersion, PtuCurated, PtuRef, CComp, Block, BlockCC, BlockCC4)) + "\n")
+            f.write("\t".join((AccessionVersion, PtuRef, CComp, Block, BlockCC, BlockCC4)) + "\n")
     f.close()
 
 def block_annotation(graph, state):
@@ -678,7 +677,7 @@ else:
             print('Query is related to {} plasmids'.format(ptu_related))
         with open(fname_fna+'.ptu_prediction.tsv', 'w') as fh:
             fh.write("#Predicted_PTU\tHost_Range\tOverlap_score\tReduced_Mutual_Information_score\tNotes\n")
-            hrange = ptu_hrange(u)
+            hrange = plasmid_hrange(u)
             overlap_score = overlap_expand
             reduced_score = reduced_expand
             notes = 'New putative PTU. Query is part of a sHSBM cluster of size {}'.format(cl_size)
@@ -696,7 +695,7 @@ else:
             p_filter = (np.array(list(g.vp.PtuRef)) == ptu_pred)
             p_filter[int(v_qry)] = True # Include query
             x = gt.GraphView(g, vfilt=p_filter)
-            hrange = ptu_hrange(x)
+            hrange = plasmid_hrange(x)
             overlap_score = overlap_expand
             reduced_score = reduced_expand
             notes = 'Query is a {} plasmid'.format(ptu_pred)

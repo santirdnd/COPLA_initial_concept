@@ -555,16 +555,15 @@ if hist[comp[v_qry]] <= 4:
         print('Query is part of a graph component of size {}'.format(cl_size))
         print('This plasmid could form part of a new, still unnamed, PTU')
     with open(fname_fna+'.ptu_prediction.tsv', 'w') as fh:
-        fh.write("#Predicted_PTU\tHost_Range\tOverlap_score\tReduced_Mutual_Information_score\tNotes\n")
-        overlap_score = float('nan') if cl_size == 1 else 1.0
-        reduced_score = float('nan') if cl_size == 1 else 1.0
+        fh.write("#Predicted_PTU\tHost_Range\tScore\tNotes\n")
+        score = float('nan') if cl_size == 1 else 1.0
         if cl_size < 4:
             hrange = '-'
             notes = 'PTU could not be assigned. Query is part of a graph component of size {}'.format(cl_size)
         else:
             hrange = plasmid_hrange(u)
             notes = 'New putative PTU. Query is part of a graph component of size {}'.format(cl_size)
-        fh.write("{}\t{}\t{:.4f}\t{:.4f}\t{}\n".format(ptu_pred, hrange, overlap_score, reduced_score, notes))
+        fh.write("{}\t{}\t{:.4f}\t{}\n".format(ptu_pred, hrange, score, notes))
     with open(fname_fna+'.related_plasmids.tsv', 'w') as fh:
         fh.write("#AccessionVersion\tPTU_Ref\tNote\n")
         for v in u.vertices():
@@ -625,12 +624,12 @@ for i in sHSBMRef2_list:
 if len(ref_expand) == 0:
     # Query was assigned to a singleton
     overlap_expand = float('nan')
-    mutual_expand = float('nan')
-    reduced_expand = float('nan')
+#    mutual_expand = float('nan')
+#    reduced_expand = float('nan')
 else:
     overlap_expand = gt.partition_overlap(ref_expand, new_expand, norm=True)
-    mutual_expand = gt.mutual_information(ref_expand, new_expand, norm=True)
-    reduced_expand = gt.reduced_mutual_information(ref_expand, new_expand, norm=True)
+#    mutual_expand = gt.mutual_information(ref_expand, new_expand, norm=True)
+#    reduced_expand = gt.reduced_mutual_information(ref_expand, new_expand, norm=True)
 
 # Predicted PTU is the most frequent reference label among the new cluster
 w = gt.GraphView(g, vfilt=expand_filter)
@@ -651,12 +650,11 @@ if cl_size < 4:
     if ptu_related != '-':
         print('Query is related to {} plasmids'.format(ptu_related))
     with open(fname_fna+'.ptu_prediction.tsv', 'w') as fh:
-        fh.write("#Predicted_PTU\tHost_Range\tOverlap_score\tReduced_Mutual_Information_score\tNotes\n")
+        fh.write("#Predicted_PTU\tHost_Range\tScore\tNotes\n")
         hrange = '-'
-        overlap_score = overlap_expand
-        reduced_score = reduced_expand
+        score = overlap_expand
         notes = 'PTU could not be assigned. Query is part of a sHSBM cluster of size {}'.format(cl_size)
-        fh.write("{}\t{}\t{:.4f}\t{:.4f}\t{}\n".format(ptu_pred, hrange, overlap_score, reduced_score, notes))
+        fh.write("{}\t{}\t{:.4f}\t{}\n".format(ptu_pred, hrange, score, notes))
     with open(fname_fna+'.related_plasmids.tsv', 'w') as fh:
         fh.write("#AccessionVersion\tPTU_Ref\tNote\n")
         for v in w.vertices():
@@ -676,12 +674,11 @@ else:
         if ptu_related != '-':
             print('Query is related to {} plasmids'.format(ptu_related))
         with open(fname_fna+'.ptu_prediction.tsv', 'w') as fh:
-            fh.write("#Predicted_PTU\tHost_Range\tOverlap_score\tReduced_Mutual_Information_score\tNotes\n")
+            fh.write("#Predicted_PTU\tHost_Range\tScore\tNotes\n")
             hrange = plasmid_hrange(u)
-            overlap_score = overlap_expand
-            reduced_score = reduced_expand
+            score = overlap_expand
             notes = 'New putative PTU. Query is part of a sHSBM cluster of size {}'.format(cl_size)
-            fh.write("{}\t{}\t{:.4f}\t{:.4f}\t{}\n".format(ptu_pred, hrange, overlap_score, reduced_score, notes))
+            fh.write("{}\t{}\t{:.4f}\t{}\n".format(ptu_pred, hrange, score, notes))
         with open(fname_fna+'.related_plasmids.tsv', 'w') as fh:
             fh.write("#AccessionVersion\tPTU_Ref\tNote\n")
             for v in w.vertices():
@@ -691,15 +688,18 @@ else:
         print('Query is a {} plasmid'.format(ptu_pred))
         print('Query is part of a sHSBM cluster of size {}'.format(cl_size))
         with open(fname_fna+'.ptu_prediction.tsv', 'w') as fh:
-            fh.write("#Predicted_PTU\tHost_Range\tOverlap_score\tReduced_Mutual_Information_score\tNotes\n")
+            fh.write("#Predicted_PTU\tHost_Range\tScore\tNotes\n")
             p_filter = (np.array(list(g.vp.PtuRef)) == ptu_pred)
             p_filter[int(v_qry)] = True # Include query
             x = gt.GraphView(g, vfilt=p_filter)
             hrange = plasmid_hrange(x)
-            overlap_score = overlap_expand
-            reduced_score = reduced_expand
+            score = overlap_expand
             notes = 'Query is a {} plasmid'.format(ptu_pred)
-            fh.write("{}\t{}\t{:.4f}\t{:.4f}\t{}\n".format(ptu_pred, hrange, overlap_score, reduced_score, notes))
+            hr_ref = g.vp.HRangeRef[list(x.vertices())[0]]
+            if hr_ref != hrange:
+                notes += '. Former PTU host range was {}'.format(hr_ref)
+                print('Query inclusion has caused PTU host range to increase from {} to {}'.format(hr_ref, hrange))
+            fh.write("{}\t{}\t{:.4f}\t{}\n".format(ptu_pred, hrange, score, notes))
         with open(fname_fna+'.related_plasmids.tsv', 'w') as fh:
             fh.write("#AccessionVersion\tPTU_Ref\tNote\n")
             for v in w.vertices():

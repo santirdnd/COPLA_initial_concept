@@ -8,7 +8,6 @@ dependencies:
 - graph-tool=2.33
 - numpy
 - pandas
-- scikit-learn
 - blast=2.9.0
 - prodigal=2.6.3
 - hmmer=3.3

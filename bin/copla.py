@@ -168,7 +168,7 @@ def run_pfinder(fname, outdir):
     # To search against last PlasmidFinder database
     #cmd = ['plasmidfinder.py', '-i', fname, '-o', outdir, '-t', '0.80', '-x', '-q']
     # To search against PlasmidFinder database version from 2018/05/02
-    cmd = ['plasmidfinder.py', '-i', fname, '-o', outdir, '-t', '0.80', '-x', '-q', '-p', 'databases/PlasmidFinder_190831', '-d', 'enterobacteriaceae,gram_positive']
+    cmd = ['plasmidfinder.py', '-i', fname, '-o', outdir, '-t', '0.80', '-x', '-q', '-p', 'databases/PlasmidFinder_190731', '-d', 'enterobacteriaceae,gram_positive']
     cp = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     rep = []

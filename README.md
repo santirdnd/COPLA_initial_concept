@@ -66,7 +66,7 @@ $ cd ../..
 
 Other relevant info:
 
-- MOBscan relaxase database was downloaded from https://castillo.unican.es/mobscan_about
+- MOBscan relaxase database was downloaded from https://castillo.dicom.unican.es/mobscan_about
 - CONJScan, the database for MPF typing used by MacSyFinder, was downloaded at 2019-05-30 from https://github.com/gem-pasteur/Macsyfinder_models and updated using MOBscan relaxase profiles
 - PlasmidFinder replicon database was downloaded at 2019-07-31 from https://bitbucket.org/genomicepidemiology/plasmidfinder_db.git
 

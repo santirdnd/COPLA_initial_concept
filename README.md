@@ -75,7 +75,10 @@ Other relevant info:
 COPLA can be used to predict the PTU to which a plasmid belongs. For this just its nucleotide sequence is needed:
 
 ~~~bash
-$ bin/copla.py ${PLASMID_SEQ} databases/Copla_RS84/RS84f_sHSBM.pickle databases/Copla_RS84/CoplaDB.lst ${OUTPUT_DIRECTORY}
+$ bin/copla.py test/NZ_CP028167.1.fna \
+    databases/Copla_RS84/RS84f_sHSBM.pickle \
+    databases/Copla_RS84/CoplaDB.lst \
+    test/NZ_CP028167.1_output
 ~~~
 
 Draft plasmids are supported through a simple concatenation of their contigs.
@@ -85,6 +88,24 @@ If the plasmid ORFeome is available it can be used by COPLA (-a option) to obtai
 Knowledge of the query topology is recommended for a better MPF typing. If not provided COPLA defaults to a circular topology. Multifasta input sequences are always processed using a linear topology.
 
 Changes in PTU host range due to query plasmid can be highlighted through the use of the taxonomic flags (-tk, -tp, -tc, -to, -tf, -tg, and -ts)
+
+Next command shows a complete example of COPLA use:
+
+~~~bash
+$ bin/copla.py test/NZ_CP028329.1.fna \
+    databases/Copla_RS84/RS84f_sHSBM.pickle \
+    databases/Copla_RS84/CoplaDB.lst \
+    test/NZ_CP028329.1_output \
+    -a test/NZ_CP028329.1.faa \
+    -t circular \
+    -tk Bacteria \
+    -tp Firmicutes \
+    -tc Bacilli \
+    -to Lactobacillales \
+    -tf Lactobacillaceae \
+    -tg Lactobacillus \
+    -ts 'Lactobacillus sp. D1501'
+~~~
 
 ## How COPLA works
 
